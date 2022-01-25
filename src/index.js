@@ -1,3 +1,4 @@
+import "./env.js";
 import { fastify } from "fastify";
 import fastifyStatic from "fastify-static";
 import path from "path";
@@ -8,7 +9,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = fastify();
-
 async function startApp() {
   try {
     app.register(fastifyStatic, {

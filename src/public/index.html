@@ -4,9 +4,45 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
+    />
+    <title>Register</title>
   </head>
   <body>
-    <h1>Hello</h1>
+    <h3>Register</h3>
+    <form id="register-form" action="">
+      <label for="email">Email</label>
+      <input type="email" name="email" />
+      <label for="password">Password</label>
+      <input type="password" name="password" />
+      <button type="submit">Register</button>
+    </form>
+    <script>
+      (function form() {
+        const form = document.getElementById("register-form");
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          try {
+            const values = Object.values(form).reduce((accum, curr) => {
+              if (curr.name) {
+                accum[curr.name] = curr.value;
+              }
+              return accum;
+            }, {});
+            const res = await fetch("/api/register", {
+              method: "POST",
+              body: JSON.stringify(values),
+              headers: {
+                "Content-type": "application/json; charset=UTF-8",
+              },
+            });
+          } catch (error) {
+            console.error(error);
+          }
+        });
+      })();
+    </script>
   </body>
 </html>

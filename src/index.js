@@ -15,6 +15,9 @@ async function startApp() {
     app.register(fastifyStatic, {
       root: path.join(__dirname, "public"),
     });
+    app.post("/api/register", async (req, reply) => {
+      console.log(req.body.email, req.body.password);
+    });
 
     await app.listen(3000);
     console.log("🚀 Server Listening at port: 3000");

@@ -19,19 +19,49 @@
       <input type="password" name="password" />
       <button type="submit">Register</button>
     </form>
+    <hr />
+    <h3>Login</h3>
+    <form id="login-form" action="">
+      <label for="email">Email</label>
+      <input type="email" name="email" />
+      <label for="password">Password</label>
+      <input type="password" name="password" />
+      <button type="submit">Login</button>
+    </form>
     <script>
       (function form() {
-        const form = document.getElementById("register-form");
-        form.addEventListener("submit", async function (e) {
+        const registerForm = document.getElementById("register-form");
+        const loginForm = document.getElementById("login-form");
+        registerForm.addEventListener("submit", async function (e) {
           e.preventDefault();
           try {
-            const values = Object.values(form).reduce((accum, curr) => {
+            const values = Object.values(registerForm).reduce((accum, curr) => {
               if (curr.name) {
                 accum[curr.name] = curr.value;
               }
               return accum;
             }, {});
             const res = await fetch("/api/register", {
+              method: "POST",
+              body: JSON.stringify(values),
+              headers: {
+                "Content-type": "application/json; charset=UTF-8",
+              },
+            });
+          } catch (error) {
+            console.error(error);
+          }
+        });
+        loginForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          try {
+            const values = Object.values(loginForm).reduce((accum, curr) => {
+              if (curr.name) {
+                accum[curr.name] = curr.value;
+              }
+              return accum;
+            }, {});
+            const res = await fetch("/api/authorize", {
               method: "POST",
               body: JSON.stringify(values),
               headers: {

@@ -28,7 +28,7 @@ async function startApp() {
       const {
         body: { email, password },
       } = req;
-      console.log(email, password);
+
       authorizeUser(email, password).catch((err) => {
         console.error(err);
       });

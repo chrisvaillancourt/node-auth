@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "format": "prettier --write . --ignore-path './.gitignore'"
   },
   "keywords": [],
   "author": "Chris Vaillancourt",
@@ -18,5 +18,8 @@
     "fastify-static": "^4.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.3.1"
+  },
+  "devDependencies": {
+    "prettier": "2.5.1"
   }
 }

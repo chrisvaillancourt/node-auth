@@ -1,3 +1,3 @@
-import { client } from "../db.js";
+import { client } from '../db.js';
 
-export const user = client.db("test").collection("user");
+export const user = client.db('test').collection('user');

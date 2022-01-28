@@ -1,11 +1,12 @@
-import "./env.js";
-import { fastify } from "fastify";
-import fastifyStatic from "fastify-static";
-import fastifyCookie from "fastify-cookie";
-import path from "path";
-import { fileURLToPath } from "url";
-import { connectDb } from "./db.js";
-import { registerUser, authorizeUser } from "./accounts/index.js";
+import './env.js';
+import { fastify } from 'fastify';
+import fastifyStatic from 'fastify-static';
+import fastifyCookie from 'fastify-cookie';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { connectDb } from './db.js';
+import { registerUser, authorizeUser } from './accounts/index.js';
+import { logUserIn } from './accounts/logUserIn.js';
 // ESM specific features
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,9 +18,9 @@ async function startApp() {
       secret: process.env.COOKIE_SIGNATURE,
     });
     app.register(fastifyStatic, {
-      root: path.join(__dirname, "public"),
+      root: path.join(__dirname, 'public'),
     });
-    app.post("/api/register", async (req, reply) => {
+    app.post('/api/register', async (req, reply) => {
       const {
         body: { email, password },
       } = req;
@@ -28,7 +29,7 @@ async function startApp() {
       });
     });
 
-    app.post("/api/authorize", async (req, reply) => {
+    app.post('/api/authorize', async (req, reply) => {
       const {
         body: { email, password },
       } = req;
@@ -36,18 +37,20 @@ async function startApp() {
       const isAuthorized = authorizeUser(email, password).catch((err) => {
         console.error(err);
       });
+      if (isAuthorized) {
+      }
       reply
-        .setCookie("test-cookie", "the value is this", {
-          path: "/",
-          domain: "localhose",
+        .setCookie('test-cookie', 'the value is this', {
+          path: '/',
+          domain: 'localhose',
           httpOnly: true,
           // secure: true // requires https
         })
-        .send({ data: "just testing" });
+        .send({ data: 'just testing' });
     });
 
     await app.listen(3000);
-    console.log("🚀 Server Listening at port: 3000");
+    console.log('🚀 Server Listening at port: 3000');
   } catch (e) {
     console.error(e);
   }

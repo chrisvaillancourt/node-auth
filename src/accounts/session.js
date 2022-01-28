@@ -1,9 +1,9 @@
-import { randomBytes } from "crypto";
+import { randomBytes } from 'crypto';
 async function createSession(userId, connection) {
   try {
-    const sessionToken = randomBytes(43).toString("hex");
+    const sessionToken = randomBytes(43).toString('hex');
     const { ip, userAgent } = connection;
-    const { session } = await import("../session/session.js");
+    const { session } = await import('../session/session.js');
     session.insertOne({
       sessionToken,
       userId,

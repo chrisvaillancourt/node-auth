@@ -34,10 +34,14 @@ async function startApp() {
         body: { email, password },
       } = req;
 
-      const isAuthorized = authorizeUser(email, password).catch((err) => {
+      const { isAuthorized, userId } = await authorizeUser(
+        email,
+        password
+      ).catch((err) => {
         console.error(err);
       });
       if (isAuthorized) {
+        await logUserIn(userId, req, reply);
       }
       reply
         .setCookie('test-cookie', 'the value is this', {

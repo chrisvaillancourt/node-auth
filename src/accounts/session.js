@@ -4,6 +4,7 @@ async function createSession(userId, connection) {
     const sessionToken = randomBytes(43).toString('hex');
     const { ip, userAgent } = connection;
     const { session } = await import('../session/session.js');
+
     session.insertOne({
       sessionToken,
       userId,
@@ -13,6 +14,7 @@ async function createSession(userId, connection) {
       updatedAt: new Date(),
       createdAt: new Date(),
     });
+    return sessionToken;
   } catch (error) {
     throw new Error(`Session creation failed: ${error}`);
   }

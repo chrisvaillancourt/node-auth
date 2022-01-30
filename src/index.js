@@ -42,15 +42,9 @@ async function startApp() {
       });
       if (isAuthorized) {
         await logUserIn(userId, req, reply);
+        reply.send({ data: 'User logged in' });
       }
-      reply
-        .setCookie('test-cookie', 'the value is this', {
-          path: '/',
-          domain: 'localhose',
-          httpOnly: true,
-          // secure: true // requires https
-        })
-        .send({ data: 'just testing' });
+      reply.send({ data: 'auth failed' });
     });
 
     await app.listen(3000);

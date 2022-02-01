@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import { ObjectId } from 'mongodb';
+
 const JWT_SIGNAURE = process.env.JWT_SIGNATURE;
 
 async function getUserFromCookies(request) {
@@ -10,7 +12,12 @@ async function getUserFromCookies(request) {
         cookies: { accessToken },
       } = request;
       const decodedAccessToken = jwt.verify(accessToken, JWT_SIGNAURE);
-      console.log(decodedAccessToken);
+
+      const { user } = await import('../user/user.js');
+
+      return user.findOne({
+        _id: ObjectId(decodedAccessToken?.userId),
+      });
     } else {
       console.error('no access token');
     }

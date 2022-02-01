@@ -17,14 +17,14 @@ async function logUserIn(userId, request, reply) {
   reply
     .setCookie('refreshToken', refreshToken, {
       path: '/',
-      domain: 'localhose',
+      domain: 'localhost',
       httpOnly: true,
       // secure: true // requires https
       expires,
     })
     .setCookie('accessToken', accessToken, {
       path: '/',
-      domain: 'localhose',
+      domain: 'localhost',
       httpOnly: true,
       // secure: true // requires https
     });

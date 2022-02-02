@@ -30,4 +30,4 @@ async function logUserIn(userId, request, reply) {
     });
 }
 
-export { logUserIn };
+export { logUserIn, logUserIn as default };

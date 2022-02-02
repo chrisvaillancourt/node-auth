@@ -5,8 +5,14 @@ import fastifyCookie from 'fastify-cookie';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { connectDb } from './db.js';
-import { registerUser, authorizeUser } from './accounts/index.js';
-import { logUserIn } from './accounts/logUserIn.js';
+import {
+  registerUser,
+  authorizeUser,
+  logUserIn,
+  getUserFromCookies,
+  logUserOut,
+} from './accounts/index.js';
+
 // ESM specific features
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -59,6 +65,17 @@ async function startApp() {
         throw new Error(`There was an error with the test: ${error}`);
       }
     });
+    app.post('/api/logout', {}, async (req, reply) => {
+      try {
+        await logUserOut(req, reply);
+        reply.send({
+          data: 'User logged out.',
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
     await app.listen(3000);
     console.log('🚀 Server Listening at port: 3000');
   } catch (e) {

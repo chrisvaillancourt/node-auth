@@ -47,6 +47,18 @@ async function startApp() {
       reply.send({ data: 'auth failed' });
     });
 
+    app.get('/test', {}, async (req, reply) => {
+      try {
+        const user = await getUserFromCookies(req, reply);
+        if (user?._id) {
+          reply.send({ data: user });
+        } else {
+          reply.send({ data: 'User lookup failed' });
+        }
+      } catch (error) {
+        throw new Error(`There was an error with the test: ${error}`);
+      }
+    });
     await app.listen(3000);
     console.log('🚀 Server Listening at port: 3000');
   } catch (e) {

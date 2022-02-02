@@ -19,7 +19,9 @@
       <input type="password" name="password" />
       <button type="submit">Register</button>
     </form>
+    <br />
     <hr />
+    <br />
     <h3>Login</h3>
     <form id="login-form" action="">
       <label for="email">Email</label>
@@ -28,7 +30,21 @@
       <input type="password" name="password" />
       <button type="submit">Login</button>
     </form>
+    <br />
+    <hr />
+    <br />
+    <button type="submit" onclick="logout()">Log out</button>
     <script>
+      async function logout() {
+        try {
+          const res = await fetch('/api/logout', {
+            method: 'POST',
+          });
+          console.log(res);
+        } catch (error) {
+          console.error('There was an error logging out: ', error);
+        }
+      }
       (function form() {
         const registerForm = document.getElementById('register-form');
         const loginForm = document.getElementById('login-form');

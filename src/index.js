@@ -27,12 +27,31 @@ async function startApp() {
       root: path.join(__dirname, 'public'),
     });
     app.post('/api/register', async (req, reply) => {
-      const {
-        body: { email, password },
-      } = req;
-      registerUser(email, password).catch((err) => {
-        console.error(err);
-      });
+      try {
+        const {
+          body: { email, password },
+        } = req;
+        const userId = await registerUser(email, password).catch((err) => {
+          console.error(err);
+        });
+        if (userId) {
+          await logUserIn(userId, req, reply);
+
+          reply.send({
+            data: {
+              status: 'SUCCESS',
+              userId,
+            },
+          });
+        }
+      } catch (e) {
+        console.log(e);
+        reply.send({
+          data: {
+            status: 'FAILED',
+          },
+        });
+      }
     });
 
     app.post('/api/authorize', async (req, reply) => {

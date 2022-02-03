@@ -43,14 +43,27 @@ async function startApp() {
       const { isAuthorized, userId } = await authorizeUser(
         email,
         password
-      ).catch((err) => {
-        console.error(err);
+      ).catch((e) => {
+        console.error(`There was an error authorizing the user: ${e}`);
+        reply.send({
+          data: {
+            status: 'FAILURE',
+          },
+        });
       });
       if (isAuthorized) {
-        await logUserIn(userId, req, reply);
-        reply.send({ data: 'User logged in' });
+        await logUserIn(userId, req, reply).catch((e) => {
+          console.error(`There was an error logging the user in: ${e}`);
+          reply.send({ data: { status: 'ERROR' } });
+        });
+        reply.send({
+          data: {
+            status: 'SUCCESS',
+            userId,
+          },
+        });
       }
-      reply.send({ data: 'auth failed' });
+      reply.send({ data: { status: 'FAILURE' } });
     });
 
     app.get('/test', {}, async (req, reply) => {

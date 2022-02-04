@@ -8,5 +8,11 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  rules: {},
+  rules: {
+    'array-callback-return': 'error',
+    'no-new-wrappers': 'error',
+    eqeqeq: ['error', 'smart'],
+    'no-var': 'off',
+    'no-return-await': 'error',
+  },
 };

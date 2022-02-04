@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint --ext \".js\" --ignore-path .gitignore .",
+    "lint:fix": "eslint --ext \".js\" --ignore-path .gitignore . --fix",
     "format": "prettier --write . --ignore-path './.gitignore'"
   },
   "keywords": [],

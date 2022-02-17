@@ -37,3 +37,13 @@ refresh token:
 
 1. npm i
 2. Run with nodemon. To install nodemon, run `npm i -g nodemon`
+
+### Environment variables
+
+This project expects a `.env` file in the root of the directory with the following variables:
+
+```bash
+MONGO_URL=
+COOKIE_SIGNATURE=
+JWT_SIGNATURE=
+```

@@ -64,6 +64,11 @@ async function refreshTokens(sessionToken, userId, reply) {
       });
   } catch (error) {
     console.error(`There was an error setting refresh tokens: ${error}`);
+    reply.send({
+      data: {
+        status: 'FAILURE',
+      },
+    });
   }
 }
 

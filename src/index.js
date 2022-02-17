@@ -46,7 +46,7 @@ async function startApp() {
         console.log(e);
         reply.send({
           data: {
-            status: 'FAILED',
+            status: 'FAILURE',
           },
         });
       }
@@ -89,7 +89,11 @@ async function startApp() {
         if (user?._id) {
           reply.send({ data: user });
         } else {
-          reply.send({ data: 'User lookup failed' });
+          reply.send({
+            data: {
+              status: 'FAILURE',
+            },
+          });
         }
       } catch (error) {
         throw new Error(`There was an error with the test: ${error}`);
@@ -99,10 +103,17 @@ async function startApp() {
       try {
         await logUserOut(req, reply);
         reply.send({
-          data: 'User logged out.',
+          data: {
+            status: 'SUCCESS',
+          },
         });
       } catch (e) {
-        console.error(e);
+        console.error(`There was an error logging the user out: ${e}`);
+        reply.send({
+          data: {
+            status: 'FAILURE',
+          },
+        });
       }
     });
 

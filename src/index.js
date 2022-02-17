@@ -31,9 +31,7 @@ async function startApp() {
         const {
           body: { email, password },
         } = req;
-        const userId = await registerUser(email, password).catch((err) => {
-          console.error(err);
-        });
+        const userId = await registerUser(email, password);
         if (userId) {
           await logUserIn(userId, req, reply);
 

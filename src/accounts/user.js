@@ -48,19 +48,22 @@ async function refreshTokens(sessionToken, userId, reply) {
     );
     const now = new Date();
     const expires = now.setDate(now.getDate() + 30); // 30 days
+    const {
+      env: { ROOT_DOMAIN: domain },
+    } = process;
     reply
       .setCookie('refreshToken', refreshToken, {
         path: '/',
-        domain: 'localhost',
+        domain,
         httpOnly: true,
-        // secure: true // requires https
         expires,
+        secure: true, // requires https
       })
       .setCookie('accessToken', accessToken, {
         path: '/',
-        domain: 'localhost',
+        domain,
         httpOnly: true,
-        // secure: true // requires https
+        secure: true, // requires https
       });
   } catch (error) {
     console.error(`There was an error setting refresh tokens: ${error}`);

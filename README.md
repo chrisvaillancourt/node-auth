@@ -37,6 +37,7 @@ refresh token:
 
 1. npm i
 2. Run with nodemon. To install nodemon, run `npm i -g nodemon`
+3. Start caddy reverse proxy with `caddy run`
 
 ### Environment variables
 
@@ -46,4 +47,21 @@ This project expects a `.env` file in the root of the directory with the followi
 MONGO_URL=
 COOKIE_SIGNATURE=
 JWT_SIGNATURE=
+ROOT_DOMAIN=nodeauth.dev
 ```
+
+### Enabling https
+
+1. Update hosts file (below)
+2. Install [caddy server](https://caddyserver.com/docs/install)
+3. Add `Caddyfile` config in root dir
+4. Start caddy reverse proxy
+5. [Firefox only] Enable root/local certificate authorities by navigating to `about:config` in Firefox and toggling `security.enterprise_roots.enabled` to `true`
+
+#### Hosts file
+
+Safari doesn't follow standard for allowing secure cookies on `localhost` domains. We can work around this by updating our hosts file and running a reverse proxy with caddy server.
+
+##### Modify hosts file
+
+Add `127.0.0.1 nodeauth.dev` as a new entry to your hosts file. On macos this is located at `/private/etc/hosts`.

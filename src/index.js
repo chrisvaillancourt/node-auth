@@ -13,6 +13,7 @@ import {
   getUserFromCookies,
   logUserOut,
 } from './accounts/index.js';
+import { sendEmail } from './mail/index.js';
 
 // ESM specific features
 const __filename = fileURLToPath(import.meta.url);
@@ -39,7 +40,11 @@ async function startApp() {
         const userId = await registerUser(email, password);
         if (userId) {
           await logUserIn(userId, req, reply);
-
+          sendEmail({
+            to: email,
+            subject: 'Verify account',
+            html: 'Please verify your account.',
+          });
           reply.send({
             data: {
               status: 'SUCCESS',

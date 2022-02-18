@@ -36,8 +36,9 @@ refresh token:
 ## development
 
 1. npm i
-2. Run with nodemon. To install nodemon, run `npm i -g nodemon`
+2. Run api with nodemon with `nodemon src/index.js`. To install nodemon, run `npm i -g nodemon`
 3. Start caddy reverse proxy with `caddy run`
+4. Serve ui with `npm run serve:ui`
 
 ### Environment variables
 

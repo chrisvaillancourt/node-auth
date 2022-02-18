@@ -117,8 +117,8 @@ async function startApp() {
       }
     });
 
-    await app.listen(3000);
-    console.log('🚀 Server Listening at port: 3000');
+    await app.listen(3001);
+    console.log('🚀 Server Listening at port: 3001');
   } catch (e) {
     console.error(e);
   }

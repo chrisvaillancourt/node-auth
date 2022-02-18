@@ -59,6 +59,7 @@
             }, {});
             const res = await fetch('https://api.nodeauth.dev/api/register', {
               method: 'POST',
+              credentials: 'include',
               body: JSON.stringify(values),
               headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -79,6 +80,7 @@
             }, {});
             const res = await fetch('https://api.nodeauth.dev/api/authorize', {
               method: 'POST',
+              credentials: 'include',
               body: JSON.stringify(values),
               headers: {
                 'Content-type': 'application/json; charset=UTF-8',

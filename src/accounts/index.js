@@ -4,3 +4,4 @@ import { getUserFromCookies } from './user.js';
 export * from './logUserIn.js';
 export { registerUser, authorizeUser, getUserFromCookies };
 export * from './logUserOut.js';
+export * from './verify.js';

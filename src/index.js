@@ -12,6 +12,7 @@ import {
   logUserIn,
   getUserFromCookies,
   logUserOut,
+  createVerifyEmailLink,
 } from './accounts/index.js';
 import { sendEmail } from './mail/index.js';
 
@@ -39,12 +40,14 @@ async function startApp() {
         } = req;
         const userId = await registerUser(email, password);
         if (userId) {
+          const emailVerifyLink = await createVerifyEmailLink(email);
           await logUserIn(userId, req, reply);
           sendEmail({
             to: email,
-            subject: 'Verify account',
-            html: 'Please verify your account.',
+            subject: 'Verify your email',
+            html: `<a href="${emailVerifyLink}">Click to verify email.</a>`,
           });
+
           reply.send({
             data: {
               status: 'SUCCESS',

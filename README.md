@@ -31,12 +31,14 @@ refresh token:
 - generate a JWT and store in a HTTP only cookie
   - JWT: encodes access and refresh token
   - JWT stores refresh and access token
-  -
+  - Store user session in db collection
 
 ## development
 
 1. npm i
-2. Run app with `npm run start`
+2. Run caddy proxy with `caddy run`
+3. Run api by running `npm run start` from the `./api` directory
+4. Run the ui by running `npm run start` from the `./ui` directory
 
 ### Environment variables
 

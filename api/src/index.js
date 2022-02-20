@@ -19,6 +19,7 @@ import { sendEmail } from './mail/index.js';
 // ESM specific features
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const PORT = 3001;
 
 const app = fastify();
 async function startApp() {
@@ -130,8 +131,8 @@ async function startApp() {
       }
     });
 
-    await app.listen(3001);
-    console.log('🚀 Server Listening at port: 3001');
+    await app.listen(PORT);
+    console.log(`🚀 Server Listening at port: ${PORT}`);
   } catch (e) {
     console.error(e);
   }

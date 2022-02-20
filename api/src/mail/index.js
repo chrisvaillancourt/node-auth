@@ -28,12 +28,14 @@ export async function sendEmail({
   try {
     if (!testAccount) testAccount = await createTestAccount();
     if (!transporter) transporter = createTransporter();
-    const info = transporter.sendMail({
+    const info = await transporter.sendMail({
       from,
       to,
       subject,
       html,
     });
+    console.log(info);
+    console.log(nodemailer.getTestMessageUrl(info));
     return info;
   } catch (error) {
     console.error(`There was an error sending email: ${error}`);

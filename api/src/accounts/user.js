@@ -90,4 +90,12 @@ async function changePassword(userId, newPassword) {
   );
 }
 
-export { getUserFromCookies, refreshTokens, changePassword };
+async function setEmailVerified(email, verifiedVal) {
+  const { user } = await import('../user/user.js');
+  return user.updateOne(
+    { 'email.address': email },
+    { $set: { 'email.verified': verifiedVal } }
+  );
+}
+
+export { getUserFromCookies, refreshTokens, changePassword, setEmailVerified };

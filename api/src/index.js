@@ -13,6 +13,7 @@ import {
   getUserFromCookies,
   logUserOut,
   createVerifyEmailLink,
+  validateVerifyEmail,
 } from './accounts/index.js';
 import { sendEmail } from './mail/index.js';
 
@@ -129,6 +130,13 @@ async function startApp() {
           },
         });
       }
+    });
+    app.post('/api/verify', {}, async (request, reply) => {
+      const {
+        body: { token, email },
+      } = request;
+      const isValid = validateVerifyEmail(token, email);
+      isValid ? reply.code(200).send() : reply.code(401).send();
     });
 
     await app.listen(PORT);

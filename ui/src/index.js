@@ -35,14 +35,10 @@ async function startApp() {
         },
       });
       console.log(res);
-      reply.code(200).send('all is well');
+      res.status == 200 ? reply.redirect('/') : reply.code(401).send();
     } catch (error) {
       console.error('There was an error verifying the email: ', error);
-      reply.send({
-        data: {
-          status: 'FAILURE',
-        },
-      });
+      reply.code(401).send();
     }
   });
 

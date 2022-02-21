@@ -27,12 +27,9 @@ function validateVerifyEmail(token, email) {
   const isValid = emailToken === token;
 
   if (isValid) {
-    // TODO move to separate function
-    import('../user/user.js').then(({ user }) => {
-      user.updateOne(
-        { 'email.address': email },
-        { $set: { 'email.verified': true } }
-      );
+    // TODO refactor connection so we don't need to use a dynamic import
+    import('../user/user.js').then(({ setEmailVerified }) => {
+      setEmailVerified(email, true);
     });
     return true;
   }

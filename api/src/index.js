@@ -118,18 +118,10 @@ async function startApp() {
     app.post('/api/logout', {}, async (req, reply) => {
       try {
         await logUserOut(req, reply);
-        reply.send({
-          data: {
-            status: 'SUCCESS',
-          },
-        });
+        reply.code(200).send();
       } catch (e) {
         console.error(`There was an error logging the user out: ${e}`);
-        reply.send({
-          data: {
-            status: 'FAILURE',
-          },
-        });
+        reply.code(500).send();
       }
     });
     app.post('/api/verify', {}, async (request, reply) => {

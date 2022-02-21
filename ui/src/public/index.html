@@ -33,6 +33,17 @@
     <br />
     <hr />
     <br />
+    <h3>Change Password</h3>
+    <form id="change-form" action="">
+      <label for="password">Old Password</label>
+      <input type="password" name="oldPassword" />
+      <label for="password">New Password</label>
+      <input type="password" name="newPassword" />
+      <button type="submit">Change Password</button>
+    </form>
+    <br />
+    <hr />
+    <br />
     <button type="submit" onclick="logout()">Log out</button>
     <script>
       async function logout() {
@@ -48,6 +59,7 @@
       (function form() {
         const registerForm = document.getElementById('register-form');
         const loginForm = document.getElementById('login-form');
+
         registerForm.addEventListener('submit', async function (e) {
           e.preventDefault();
           try {
@@ -86,6 +98,33 @@
                 'Content-type': 'application/json; charset=UTF-8',
               },
             });
+          } catch (error) {
+            console.error(error);
+          }
+        });
+        const changeForm = document.getElementById('change-form');
+        changeForm.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          try {
+            const values = Object.values(changeForm).reduce((accum, curr) => {
+              if (curr.name) {
+                accum[curr.name] = curr.value;
+              }
+              return accum;
+            }, {});
+            console.log({ values });
+            const res = await fetch(
+              'https://api.nodeauth.dev/api/change-password',
+              {
+                method: 'POST',
+                credentials: 'include',
+                body: JSON.stringify(values),
+                headers: {
+                  'Content-type': 'application/json; charset=UTF-8',
+                },
+              }
+            );
+            console.log(res);
           } catch (error) {
             console.error(error);
           }

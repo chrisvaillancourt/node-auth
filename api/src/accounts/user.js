@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
 import { createTokens } from './tokens.js';
-
+import bcrypt from 'bcryptjs'; // TODO change to dynamic import since only used in one fn or refactor password hashing to separate fns
 const JWT_SIGNAURE = process.env.JWT_SIGNATURE;
 
 async function getUserFromCookies(request, reply) {
@@ -75,4 +75,19 @@ async function refreshTokens(sessionToken, userId, reply) {
   }
 }
 
-export { getUserFromCookies, refreshTokens };
+async function changePassword(userId, newPassword) {
+  const { genSalt, hash } = bcrypt;
+  const { user } = await import('../user/user.js');
+  const salt = await genSalt(10);
+  const hashedPassword = await hash(newPassword, salt);
+  return user.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        password: hashedPassword,
+      },
+    }
+  );
+}
+
+export { getUserFromCookies, refreshTokens, changePassword };

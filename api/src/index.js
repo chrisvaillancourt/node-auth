@@ -14,6 +14,7 @@ import {
   logUserOut,
   createVerifyEmailLink,
   validateVerifyEmail,
+  changePassword,
 } from './accounts/index.js';
 import { sendEmail } from './mail/index.js';
 
@@ -137,6 +138,34 @@ async function startApp() {
       } = request;
       const isValid = validateVerifyEmail(token, email);
       isValid ? reply.code(200).send() : reply.code(401).send();
+    });
+    app.post('/api/change-password', {}, async (request, reply) => {
+      try {
+        const user = await getUserFromCookies(request, reply);
+        const {
+          email: { address: email },
+        } = user;
+        const {
+          body: { oldPassword, newPassword },
+        } = request;
+        if (email && oldPassword) {
+          const { isAuthorized, userId } = await authorizeUser(
+            email,
+            oldPassword
+          );
+          const updateUserPassword = async () => {
+            await changePassword(userId, newPassword);
+            reply.code(200).send();
+          };
+          isAuthorized
+            ? updateUserPassword()
+            : reply.code(401).send({ data: { status: 'failed' } });
+        }
+        reply.code(401).send();
+      } catch (error) {
+        console.error("there was an error changing the user's password", error);
+        reply.code(401);
+      }
     });
 
     await app.listen(PORT);

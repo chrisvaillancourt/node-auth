@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SIGNAURE = process.env.JWT_SIGNATURE;
-
+const {
+  env: { ROOT_DOMAIN, JWT_SIGNATURE },
+} = process;
 async function logUserOut(request, reply) {
   // delete session from db
   try {
@@ -12,11 +13,20 @@ async function logUserOut(request, reply) {
       } = request;
       const { session } = await import('../session/session.js');
       // decode session token from refresh token'
-      const { sessionToken } = jwt.verify(refreshToken, JWT_SIGNAURE);
+      const { sessionToken } = jwt.verify(refreshToken, JWT_SIGNATURE);
+
       await session.deleteOne({ sessionToken });
     }
     // remove cookies
-    reply.clearCookie('refreshToken').clearCookie('accessToken');
+    const cookieOpts = {
+      path: '/',
+      domain: ROOT_DOMAIN,
+      httpOnly: true,
+      secure: true,
+    };
+    reply
+      .clearCookie('refreshToken', cookieOpts)
+      .clearCookie('accessToken', cookieOpts);
   } catch (e) {
     console.error('there was an error logging the user out.');
   }

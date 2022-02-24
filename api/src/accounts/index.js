@@ -4,3 +4,4 @@ export * from './user.js';
 export * from './logUserIn.js';
 export * from './logUserOut.js';
 export * from './verify.js';
+export * from './reset.js';

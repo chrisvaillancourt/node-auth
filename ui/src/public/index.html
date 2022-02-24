@@ -44,6 +44,15 @@
     <br />
     <hr />
     <br />
+    <h3>Forgot Password</h3>
+    <form id="forgot-form" action="">
+      <label for="email">Email</label>
+      <input type="email" name="email" />
+      <button type="submit">Reset Password</button>
+    </form>
+    <br />
+    <hr />
+    <br />
     <button type="submit" onclick="logout()">Log out</button>
     <script>
       async function logout() {
@@ -113,7 +122,6 @@
               }
               return accum;
             }, {});
-            console.log({ values });
             const res = await fetch(
               'https://api.nodeauth.dev/api/change-password',
               {
@@ -125,10 +133,31 @@
                 },
               }
             );
-            console.log(res);
           } catch (error) {
             console.error(error);
           }
+        });
+        const forgotForm = document.getElementById('forgot-form');
+        forgotForm.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const values = Object.values(forgotForm).reduce((accum, curr) => {
+            if (curr.name) {
+              accum[curr.name] = curr.value;
+            }
+            return accum;
+          }, {});
+          const res = await fetch(
+            'https://api.nodeauth.dev/api/forgot-password',
+            {
+              method: 'POST',
+              credentials: 'include',
+              body: JSON.stringify(values),
+              headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+              },
+            }
+          );
+          console.log(res);
         });
       })();
     </script>

@@ -15,6 +15,7 @@ import {
   createVerifyEmailLink,
   validateVerifyEmail,
   changePassword,
+  createResetLink,
 } from './accounts/index.js';
 import { sendEmail } from './mail/index.js';
 
@@ -157,6 +158,24 @@ async function startApp() {
       } catch (error) {
         console.error("there was an error changing the user's password", error);
         reply.code(401);
+      }
+    });
+    app.post('/api/forgot-password', {}, async (request, reply) => {
+      try {
+        const {
+          body: { email },
+        } = request;
+        const resetLink = await createResetLink(email);
+        if (resetLink) {
+          sendEmail({
+            to: email,
+            subject: 'Reset your Password',
+            html: `<a href="${resetLink}">Click to reset your password.</a>`,
+          });
+        }
+        reply.code(200).send();
+      } catch (error) {
+        reply.code(500).send();
       }
     });
 

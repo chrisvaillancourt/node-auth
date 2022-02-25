@@ -23,5 +23,17 @@ async function createResetLink(email) {
   const userRecord = await user.findOne({ 'email.address': email });
   return userRecord ? createResetEmailLink(email) : '';
 }
-
-export { createResetLink };
+function validateExpirationTimestamp(expirationTimestamp) {
+  // 24 hours in a day * 60 mins in an hour * 60 seconds in a minute * 1000 ms in a min
+  const expirationTime = 24 * 60 * 60 * 1000; // one day in ms
+  const timeDiff = Number(expirationTimestamp) - Date.now();
+  const isValid = timeDiff > 0 && timeDiff <= expirationTime;
+  return isValid;
+}
+function validateResetEmail(token, email, expirationTimestamp) {
+  const resetToken = createResetToken(email, expirationTimestamp);
+  const isValidToken = resetToken === token;
+  const isValidTimestamp = validateExpirationTimestamp(expirationTimestamp);
+  return isValidToken && isValidTimestamp;
+}
+export { createResetLink, validateResetEmail };

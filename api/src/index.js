@@ -16,6 +16,7 @@ import {
   validateVerifyEmail,
   changePassword,
   createResetLink,
+  validateResetEmail,
 } from './accounts/index.js';
 import { sendEmail } from './mail/index.js';
 
@@ -174,6 +175,29 @@ async function startApp() {
           });
         }
         reply.code(200).send();
+      } catch (error) {
+        reply.code(500).send();
+      }
+    });
+    app.post('/api/reset', {}, async (request, reply) => {
+      try {
+        const {
+          body: { email, time, newPassword, token },
+        } = request;
+        const isValid = validateResetEmail(token, email, time);
+        if (isValid) {
+          const { user } = await import('./user/user.js');
+          const foundUser = await user.findOne({
+            'email.address': email,
+          });
+          const userId = foundUser?._id;
+          if (userId) {
+            await changePassword(userId, newPassword);
+            reply.code(200).send('Password updated');
+          }
+          reply.code(500).send();
+        }
+        reply.code(401).send('Password update failed');
       } catch (error) {
         reply.code(500).send();
       }

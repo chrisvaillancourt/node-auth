@@ -41,6 +41,13 @@ async function startApp() {
       reply.code(401).send();
     }
   });
+  app.get('/reset/:email/:expiration/:token', {}, async (_, reply) => {
+    try {
+      return reply.sendFile('reset.html');
+    } catch (error) {
+      console.error(error);
+    }
+  });
 
   await app.listen(PORT);
   console.log(`🚀 server listening on port ${PORT}`);

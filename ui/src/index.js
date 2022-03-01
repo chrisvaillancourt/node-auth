@@ -48,6 +48,13 @@ async function startApp() {
       console.error(error);
     }
   });
+  app.get('/2fa', {}, async (request, reply) => {
+    try {
+      return reply.sendFile('2fa.html');
+    } catch (error) {
+      console.error(error);
+    }
+  });
 
   await app.listen(PORT);
   console.log(`🚀 server listening on port ${PORT}`);

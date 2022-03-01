@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
+    />
+    <title>Two Factor Authentication</title>
+  </head>
+  <body>
+    <main>
+      <h1>Two Factor Authentication QR Code</h1>
+      <div id="qr-wrapper"></div>
+    </main>
+
+    <script src="https://unpkg.com/qrcode@1.4.4/build/qrcode.min.js"></script>
+    <script src="https://unpkg.com/@otplib/preset-browser@^12.0.0/buffer.js"></script>
+    <script src="https://unpkg.com/@otplib/preset-browser@^12.0.0/index.js"></script>
+
+    <script>
+      (async function () {
+        const { otplib, QRCode } = window;
+        const secret = otplib.authenticator.generateSecret();
+        const otpauth = otplib.authenticator.keyuri(
+          'test',
+          'node-auth',
+          secret
+        );
+        const imageURL = await QRCode.toDataURL(otpauth);
+        const wrapper = document.getElementById('qr-wrapper');
+        const qrImgEl = document.createElement('img');
+        qrImgEl.src = imageURL;
+        qrImgEl.alt = 'two factor authentication QR code';
+        wrapper.appendChild(qrImgEl);
+      })().catch((error) => {
+        console.error(
+          'There was an error with the two factor authorization: ',
+          error
+        );
+      });
+    </script>
+  </body>
+</html>

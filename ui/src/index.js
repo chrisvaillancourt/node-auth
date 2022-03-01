@@ -35,7 +35,7 @@ async function startApp() {
         },
       });
       console.log(res);
-      res.status == 200 ? reply.redirect('/') : reply.code(401).send();
+      res.status === 200 ? reply.redirect('/') : reply.code(401).send();
     } catch (error) {
       console.error('There was an error verifying the email: ', error);
       reply.code(401).send();

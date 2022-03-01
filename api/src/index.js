@@ -5,6 +5,7 @@ import fastifyCookie from 'fastify-cookie';
 import fastifyCors from 'fastify-cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { authenticator } from 'otplib';
 import { connectDb } from './db.js';
 import {
   registerUser,
@@ -201,6 +202,22 @@ async function startApp() {
       } catch (error) {
         reply.code(500).send();
       }
+    });
+    app.get('/api/user', {}, async (request, reply) => {
+      const user = await getUserFromCookies(request, reply);
+      user ? reply.send({ data: { user } }) : reply.code(401).send();
+    });
+    app.post('/api/2fa-register', {}, async (request, reply) => {
+      // todo catch errors
+      const user = await getUserFromCookies(request, reply).catch((error) =>
+        console.error('Error getting user from cookies: ', error)
+      );
+      const {
+        body: { token, secret },
+      } = request;
+      const isValid = authenticator.verify({ token, secret });
+      // TODO store token with user and check 2fa when logging in
+      isValid ? reply.send({ data: { user } }) : reply.code(401).send();
     });
 
     await app.listen(PORT);

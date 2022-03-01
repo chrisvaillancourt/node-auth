@@ -14,6 +14,14 @@
     <main>
       <h1>Two Factor Authentication QR Code</h1>
       <div id="qr-wrapper"></div>
+      <br />
+      <!-- TODO only show form if user is authorized -->
+      <form id="token">
+        <label for="token"><input name="token" type="text" /></label>
+        <br />
+
+        <button type="submit">Submit</button>
+      </form>
     </main>
 
     <script src="https://unpkg.com/qrcode@1.4.4/build/qrcode.min.js"></script>
@@ -21,11 +29,29 @@
     <script src="https://unpkg.com/@otplib/preset-browser@^12.0.0/index.js"></script>
 
     <script>
-      (function () {
+      (async function () {
+        'use strict';
         const { otplib, QRCode } = window;
-        function generateQRURL(user = 'TODO', service = 'node-auth') {
-          const secret = otplib.authenticator.generateSecret();
-          const otpauth = otplib.authenticator.keyuri(user, service, secret);
+        const secret = generateSecret(); // TODO don't make global
+        function getFormValues(form) {
+          return form
+            ? Object.values(form).reduce((accum, curr) => {
+                if (curr.name) {
+                  accum[curr.name] = curr.value;
+                }
+                return accum;
+              }, {})
+            : new Error('A form element is required.');
+        }
+        function generateSecret() {
+          return otplib.authenticator.generateSecret();
+        }
+        function generateQRURL(userEmail, secret, service = 'node-auth') {
+          const otpauth = otplib.authenticator.keyuri(
+            userEmail,
+            service,
+            secret
+          );
           return QRCode.toDataURL(otpauth);
         }
         function createImgEl(srcURL, alt) {
@@ -34,21 +60,64 @@
           qrImgEl.alt = alt;
           return qrImgEl;
         }
-        generateQRURL()
-          .then((qrImgURL) => {
-            const qrImgEl = createImgEl(
-              qrImgURL,
-              'two factor authentication QR code'
+        async function addQRCodeImage(email, wrapperEl) {
+          const imageURL = await generateQRURL(email, secret);
+          const imgEl = createImgEl(
+            imageURL,
+            'two factor authentication QR code'
+          );
+          wrapperEl.appendChild(imgEl);
+        }
+        function addLoginMessage(el) {
+          const pEl = document.createElement('p');
+          pEl.textContent = 'Please login first and reload the page.';
+          el.appendChild(pEl);
+        }
+        async function getUser() {
+          const userRes = await fetch('https://api.nodeauth.dev/api/user', {
+            credentials: 'include',
+          }).catch((error) => console.error('Error fetching user: ', error));
+          const userData = await userRes
+            .json()
+            .catch((error) => console.error('No user data found.'));
+          const userEmail = userData?.data?.user?.email?.address;
+          return userEmail;
+        }
+        function initFormListener(id) {
+          const form = document.getElementById(id);
+          form.addEventListener('submit', sendToken);
+          async function sendToken(e) {
+            e.preventDefault();
+            const formValues = getFormValues(form);
+            const values = {
+              ...formValues,
+              secret,
+            };
+            const res = await fetch(
+              'https://api.nodeauth.dev/api/2fa-register',
+              {
+                method: 'POST',
+                credentials: 'include',
+                body: JSON.stringify(values),
+                headers: {
+                  'Content-type': 'application/json; charset=UTF-8',
+                },
+              }
+            ).catch((error) =>
+              console.error('Error registering 2fa token: ', error)
             );
-            const wrapper = document.getElementById('qr-wrapper');
-            wrapper.appendChild(qrImgEl);
-          })
-          .catch((error) => {
-            console.error(
-              'There was an error with the two factor authorization: ',
-              error
-            );
-          });
+          }
+        }
+
+        const userEmail = await getUser().catch((error) =>
+          console.error('Error getting user data: ', error)
+        );
+        const wrapper = document.getElementById('qr-wrapper');
+        if (userEmail) {
+          addQRCodeImage(userEmail, wrapper);
+          initFormListener('token');
+        }
+        addLoginMessage(wrapper);
       })();
     </script>
   </body>

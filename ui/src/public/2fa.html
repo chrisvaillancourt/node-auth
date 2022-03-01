@@ -21,26 +21,35 @@
     <script src="https://unpkg.com/@otplib/preset-browser@^12.0.0/index.js"></script>
 
     <script>
-      (async function () {
+      (function () {
         const { otplib, QRCode } = window;
-        const secret = otplib.authenticator.generateSecret();
-        const otpauth = otplib.authenticator.keyuri(
-          'test',
-          'node-auth',
-          secret
-        );
-        const imageURL = await QRCode.toDataURL(otpauth);
-        const wrapper = document.getElementById('qr-wrapper');
-        const qrImgEl = document.createElement('img');
-        qrImgEl.src = imageURL;
-        qrImgEl.alt = 'two factor authentication QR code';
-        wrapper.appendChild(qrImgEl);
-      })().catch((error) => {
-        console.error(
-          'There was an error with the two factor authorization: ',
-          error
-        );
-      });
+        function generateQRURL(user = 'TODO', service = 'node-auth') {
+          const secret = otplib.authenticator.generateSecret();
+          const otpauth = otplib.authenticator.keyuri(user, service, secret);
+          return QRCode.toDataURL(otpauth);
+        }
+        function createImgEl(srcURL, alt) {
+          const qrImgEl = document.createElement('img');
+          qrImgEl.src = srcURL;
+          qrImgEl.alt = alt;
+          return qrImgEl;
+        }
+        generateQRURL()
+          .then((qrImgURL) => {
+            const qrImgEl = createImgEl(
+              qrImgURL,
+              'two factor authentication QR code'
+            );
+            const wrapper = document.getElementById('qr-wrapper');
+            wrapper.appendChild(qrImgEl);
+          })
+          .catch((error) => {
+            console.error(
+              'There was an error with the two factor authorization: ',
+              error
+            );
+          });
+      })();
     </script>
   </body>
 </html>

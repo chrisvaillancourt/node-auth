@@ -5,6 +5,9 @@
   "main": "./src/index.js",
   "type": "module",
   "scripts": {
+    "lint": "eslint --ext \".js\" --ignore-path .gitignore .",
+    "lint:fix": "eslint --ext \".js\" --ignore-path ../.gitignore . --fix",
+    "format": "prettier --write . --ignore-path '../.gitignore'",
     "start": "nodemon ./src/index.js"
   },
   "keywords": [],

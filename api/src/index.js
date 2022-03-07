@@ -77,7 +77,7 @@ async function startApp() {
         body: { email, password },
       } = req;
 
-      const { isAuthorized, userId } = await authorizeUser(
+      const { isAuthorized, userId, authenticatorSecret } = await authorizeUser(
         email,
         password
       ).catch((e) => {
@@ -88,7 +88,7 @@ async function startApp() {
           },
         });
       });
-      if (isAuthorized) {
+      if (isAuthorized && !authenticatorSecret) {
         await logUserIn(userId, req, reply).catch((e) => {
           console.error(`There was an error logging the user in: ${e}`);
           reply.send({ data: { status: 'ERROR' } });
@@ -97,6 +97,12 @@ async function startApp() {
           data: {
             status: 'SUCCESS',
             userId,
+          },
+        });
+      } else if (isAuthorized && authenticatorSecret) {
+        reply.send({
+          data: {
+            status: '2fa',
           },
         });
       }
@@ -230,6 +236,39 @@ async function startApp() {
         );
         if (acknowledged) reply.code(200).send();
       }
+      reply.code(401).send();
+    });
+    app.post('/api/2fa-verify', {}, async (request, reply) => {
+      const {
+        body: { token, email, password },
+      } = request;
+      const {
+        isAuthorized,
+        userId,
+        authenticatorSecret: secret,
+      } = await authorizeUser(email, password).catch((e) => {
+        console.error(`There was an error authorizing the user: ${e}`);
+        reply.code(500).send({
+          data: {
+            status: 'FAILURE',
+          },
+        });
+      });
+
+      const isValid = authenticator.verify({ token, secret });
+      if (userId && isValid && isAuthorized) {
+        await logUserIn(userId, request, reply).catch((err) => {
+          console.error('There was an error logging the user in: ', err);
+          reply.code(500).send();
+        });
+        reply.send({
+          data: {
+            status: 'SUCCESS',
+            userId,
+          },
+        });
+      }
+
       reply.code(401).send();
     });
 

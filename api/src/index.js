@@ -18,6 +18,7 @@ import {
   changePassword,
   createResetLink,
   validateResetEmail,
+  register2FA,
 } from './accounts/index.js';
 import { sendEmail } from './mail/index.js';
 
@@ -217,7 +218,19 @@ async function startApp() {
       } = request;
       const isValid = authenticator.verify({ token, secret });
       // TODO store token with user and check 2fa when logging in
-      isValid ? reply.send({ data: { user } }) : reply.code(401).send();
+      if (user._id && isValid) {
+        const { acknowledged } = await register2FA(user._id, secret).catch(
+          (error) => {
+            console.error(
+              'There was an error registering the 2fa secret: ',
+              error
+            );
+            reply.code(500).send();
+          }
+        );
+        if (acknowledged) reply.code(200).send();
+      }
+      reply.code(401).send();
     });
 
     await app.listen(PORT);

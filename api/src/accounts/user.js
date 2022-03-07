@@ -98,4 +98,22 @@ async function setEmailVerified(email, verifiedVal) {
   );
 }
 
-export { getUserFromCookies, refreshTokens, changePassword, setEmailVerified };
+async function register2FA(userId, secret) {
+  const { user } = await import('../user/user.js');
+  return user.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        authenticator: secret,
+      },
+    }
+  );
+}
+
+export {
+  getUserFromCookies,
+  refreshTokens,
+  changePassword,
+  setEmailVerified,
+  register2FA,
+};

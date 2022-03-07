@@ -82,7 +82,7 @@ async function startApp() {
         password
       ).catch((e) => {
         console.error(`There was an error authorizing the user: ${e}`);
-        reply.send({
+        reply.code(500).send({
           data: {
             status: 'FAILURE',
           },
@@ -100,7 +100,7 @@ async function startApp() {
           },
         });
       }
-      reply.send({ data: { status: 'FAILURE' } });
+      reply.code(401).send({ data: { status: 'FAILURE' } });
     });
 
     app.get('/test', {}, async (req, reply) => {

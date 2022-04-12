@@ -39,6 +39,8 @@ refresh token:
 2. Run caddy proxy with `caddy run`
 3. Run api by running `npm run start` from the `./api` directory
 4. Run the ui by running `npm run start` from the `./ui` directory
+5. View the deployed app at [nodeauth.dev](https://nodeauth.dev)
+6. Login and go to [https://api.nodeauth.dev/test](https://api.nodeauth.dev/test) to test the authorization
 
 ### Environment variables
 
